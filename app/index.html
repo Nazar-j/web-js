@@ -1,0 +1,530 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+   </head>
+ <body>
+
+  
+<div class = "conteiner7">
+
+<div >
+  
+
+  <style>
+   
+    .conteiner5{
+      font-size: 28px;
+    color: rgba(91, 106, 107, 0.609);
+    display: flex;
+  
+    } 
+    .conteiner6{
+      height: 10px;
+      width: 150px;
+      display: grid;
+      grid-template-columns: 28% 60%;
+    }
+    #clock {    
+      font-family: 'Arial', sans-serif;
+      font-size: 48px;
+    }
+
+    #ampm {
+      font-size: 1em;
+      margin-top:0px;
+      margin-right: 0px;
+      text-align: left; /* Вирівнюємо текст AM/PM зправа */
+    }
+
+    #date {
+      font-size: 1em;
+      text-align: left; /* Вирівнюємо текст дати зправа */
+    }
+  </style>
+  <div class="conteiner5">
+    <div class="con-kap3">
+    <img class="menu" src="../images/menu.avif">
+    <div id="clock"></div>
+  </div>
+    <div>
+    <div class="conteiner6">
+    <div id="ampm"></div>
+    <div id="date"></div>
+    </div>
+  </div>
+    </div>
+    <script>
+      function updateClock() {
+        const now = new Date();
+        const hours = now.getHours() % 12 || 12; // Конвертуємо години у 12-годинний формат
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+        const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(now);
+        const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(now);
+        const date = now.getDate();
+        
+        const clock = document.getElementById('clock');
+        const ampmElement = document.getElementById('ampm');
+        const dateElement = document.getElementById('date');
+    
+        clock.textContent = `${hours}:${minutes}`;
+        ampmElement.textContent = ampm;
+        dateElement.textContent = `${dayOfWeek}, ${month} ${date}`;
+      }
+    
+      // Оновлюємо годинник кожну секунду
+      setInterval(updateClock, 1000);
+    
+      // Викликаємо функцію одразу для ініціалізації годинника
+      updateClock();
+    </script>
+  </div>
+  <div class="wather">
+    <img class="wether-foto" src="../images/weather.avif" >
+    <div class="temperature-container">
+      <span class="temperature">14</span>
+      <span class="unit">°C</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="container">
+
+  <div class="box_gas">
+    <div class="con-kap">
+      <div>
+        <img class="foto_kap1" src="../images/kap1.avif">
+
+            <span class="ga">Gas usage </span>
+      </div>
+      <div>
+          <div class="dropdown">
+            <button class="dropdown-btn">Choos charts</button>
+            <div class="dropdown-content">
+                <button class="des-graf-but" href="#" onclick="timeFrame(this)" value="yValuesday" >day</button>
+                <button class="des-graf-but" href="#" onclick="timeFrame(this)" value="yValuesWeek" id="">week</button>
+                <button class="des-graf-but" href="#" onclick="timeFrame(this)" value="yValuesMonth" id="">month</button>
+                
+            </div>
+           </div>
+      
+          <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+          <div class="settings-menu" id="settingsMenu">
+            <!-- Вміст меню налаштувань тут -->
+            <p>Settings 1</p>
+            <p>Settings 2</p>
+            <p>Settings 3</p>
+          </div>
+      </div>
+   </div>
+      
+    <div class="lol">
+
+      <button onclick="active1();" id="onoff" class="point-button js-point-button" ></button>
+      <span class="month-text">Target Amount</span>
+      <button onclick="active2();" id="onoff" class="point-button js-point-button2" ></button>
+      <span class="month-text">Curtent Usage</span>
+
+   </div>
+      <div class="con-kap">
+       <div>
+          <img src="../images/month.avif" class="foto_kap2">
+          <span class="month-text">Monthly</span>
+          <span class="number-des">41.6 </span><span class="text-des">Litre</span>
+      </div>
+<div>
+<img class="foto_kap2" src="../images/tariff.avif">
+<span class="text-des">Total</span>
+<span class="text-des">$ </span><span class="number-des">65</span>
+</div>
+
+      </div>
+  <div>
+    
+    <canvas id="myChart" style="width:100%;height:250px"></canvas>
+     
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <script>
+      let config;
+    // setup 
+    const yValuesDay = [
+    {x: Date.parse('2021-11-01 00:00:00 GMT+0800'), y:150},
+    {x: Date.parse('2021-11-02 00:00:00 GMT+0800'), y:190},
+    {x: Date.parse('2021-11-03 00:00:00 GMT+0800'), y:280},
+    {x: Date.parse('2021-11-04 00:00:00 GMT+0800'), y:230},
+    {x: Date.parse('2021-11-05 00:00:00 GMT+0800'), y:210},
+    {x: Date.parse('2021-11-06 00:00:00 GMT+0800'), y:243},
+    {x: Date.parse('2021-11-07 00:00:00 GMT+0800'), y:286},
+   
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    const yValuesWeek = [
+    {x: Date.parse('2021-10-31 00:00:00 GMT+0800'), y:150},
+    {x: Date.parse('2021-11-07 00:00:00 GMT+0800'), y:321},
+    {x: Date.parse('2021-11-14 00:00:00 GMT+0800'), y:240},
+    {x: Date.parse('2021-11-21 00:00:00 GMT+0800'), y:120},
+    {x: Date.parse('2021-11-28 00:00:00 GMT+0800'), y:210},
+    
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    const yValuesMonth = [
+    {x: Date.parse('2021-01-01 00:00:00 GMT+0800'), y:150},
+    {x: Date.parse('2021-02-01 00:00:00 GMT+0800'), y:321},
+    {x: Date.parse('2021-03-01 00:00:00 GMT+0800'), y:240},
+    {x: Date.parse('2021-04-01 00:00:00 GMT+0800'), y:120},
+    {x: Date.parse('2021-05-01 00:00:00 GMT+0800'), y:210},
+    {x: Date.parse('2021-06-01 00:00:00 GMT+0800'), y:180},
+    {x: Date.parse('2021-07-01 00:00:00 GMT+0800'), y:280},
+    {x: Date.parse('2021-08-01 00:00:00 GMT+0800'), y:180},
+    {x: Date.parse('2021-09-01 00:00:00 GMT+0800'), y:110},
+    {x: Date.parse('2021-10-01 00:00:00 GMT+0800'), y:70},
+    {x: Date.parse('2021-11-01 00:00:00 GMT+0800'), y:300},
+    {x: Date.parse('2021-12-01 00:00:00 GMT+0800'), y:500},
+    
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    const yValuesDay2 = [
+    {x: Date.parse('2021-11-01 00:00:00 GMT+0800'), y:130},
+    {x: Date.parse('2021-11-02 00:00:00 GMT+0800'), y:120},
+    {x: Date.parse('2021-11-03 00:00:00 GMT+0800'), y:90},
+    {x: Date.parse('2021-11-04 00:00:00 GMT+0800'), y:170},
+    {x: Date.parse('2021-11-05 00:00:00 GMT+0800'), y:210},
+    {x: Date.parse('2021-11-06 00:00:00 GMT+0800'), y:240},
+    {x: Date.parse('2021-11-07 00:00:00 GMT+0800'), y:400},
+   
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    const yValuesWeek2 = [
+    {x: Date.parse('2021-10-31 00:00:00 GMT+0800'), y:170},
+    {x: Date.parse('2021-11-07 00:00:00 GMT+0800'), y:245},
+    {x: Date.parse('2021-11-14 00:00:00 GMT+0800'), y:270},
+    {x: Date.parse('2021-11-21 00:00:00 GMT+0800'), y:100},
+    {x: Date.parse('2021-11-28 00:00:00 GMT+0800'), y:50},
+    
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    const yValuesMonth2 = [
+    {x: Date.parse('2021-01-01 00:00:00 GMT+0800'), y:150},
+    {x: Date.parse('2021-02-01 00:00:00 GMT+0800'), y:90},
+    {x: Date.parse('2021-03-01 00:00:00 GMT+0800'), y:90},
+    {x: Date.parse('2021-04-01 00:00:00 GMT+0800'), y:140},
+    {x: Date.parse('2021-05-01 00:00:00 GMT+0800'), y:120},
+    {x: Date.parse('2021-06-01 00:00:00 GMT+0800'), y:120},
+    {x: Date.parse('2021-07-01 00:00:00 GMT+0800'), y:200},
+    {x: Date.parse('2021-08-01 00:00:00 GMT+0800'), y:240},
+    {x: Date.parse('2021-09-01 00:00:00 GMT+0800'), y:300},
+    {x: Date.parse('2021-10-01 00:00:00 GMT+0800'), y:240},
+    {x: Date.parse('2021-11-01 00:00:00 GMT+0800'), y:100},
+    {x: Date.parse('2021-12-01 00:00:00 GMT+0800'), y:50},
+    
+    //150,190,280,230,210,243,286,299,270,189,200,0
+    ];
+    console.log(Date.parse('2021-11-01 00:00:00 GMT+0800'))
+    const xValuesMonth = ['Ja','Fe','Ma','Ap','Ma','Ju','Ji','Au','Se','Oc','No','De'];
+    const xValuesWeek =['1','8','15', '22', '29']
+    const xValuesDay =['mon','tue','wed','thu','fri','sat','sun']
+     // const yValues2 = [10,150,230,260,310,143,86,99,211,19,50,120];
+    //const labelChart ='1month'
+    let currentData = yValuesMonth;
+    let currentLabels = xValuesMonth;
+    let currentData2 =yValuesMonth2;
+    const data = {
+      labels: currentLabels,
+      datasets: [{
+        //label: labelChart,
+        data: currentData,
+        
+        backgroundColor: "rgba(0, 10, 255, 0.2)",
+            borderColor: "rgba(0, 180, 255, 0.2)",   
+            pointRadius: "0",
+        tension: 0.4,
+        fill:true
+      },{
+        labels: currentLabels,
+        data: currentData2,
+        borderColor: "rgba(0, 13, 255, 0.4 )",          
+        backgroundColor: "rgba(0, 150, 255, 0.2)",
+        pointRadius: "0",
+        tension: 0.4,
+        fill:true
+      }]
+    };
+//titleTooltip
+const titleTooltip=(tooltipItems)=>{
+  return '234 ' + 'litre';
+};
+const labelTooltip=(tooltipItems)=>{
+  return '234 ' +' $';
+};
+    // config 
+   config = {
+      type: 'line',
+      data,
+      options: {
+        scales: {
+        //  x:{
+          // type: 'time',
+           // time: {
+           //  unit: 'yValuesWeek'
+           // }
+        //  },
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: {
+            display: false // Вимкнути легенду
+          },
+          tooltip:{
+          displayColors : false,
+           yAlign: 'bottom',
+           backgroundColor:colorItems,
+           titleMarginBottom:0,
+           callbacks:{
+            title:titleTooltip,
+            label:labelTooltip
+           }
+          }
+        }
+      }
+    };
+
+    function colorItems(tooltipItem){
+      console.log(tooltipItem.tooltip.labelColors[0].borderColor);
+
+    tooltipBackgraundColor="rgba(0, 150, 255, 0.5)";
+    return tooltipBackgraundColor;
+    }
+    // render init block
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+
+
+    // Instantly assign Chart.js version
+    const chartVersion = document.getElementById('chartVersion');
+    chartVersion.innerText = Chart.version;
+    </script>
+  </div>
+     
+  </div>
+
+  <div class="box_electric">
+    <div class="con-kap">
+      <div> 
+        <img class="foto_kap1" src="../images/light.avif">
+
+        <span class="ga">Electric usage </span>
+      </div>
+
+      <div>
+        <div class="dropdown">
+          <button class="dropdown-btn">Today</button>
+          <div class="dropdown-content">
+              <a href="#">Action</a>
+              <a href="#">Another action</a>
+              <a href="#">Something else here</a>
+          </div>
+        </div>
+        <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+        <div class="settings-menu" id="settingsMenu">
+      
+        </div>
+      </div>
+    </div>
+    <div class="lol">
+
+      <button onclick="active3();" id="onoff" class="point-button js-point-button3" ></button>
+      <span class="month-text">Target Amount</span>
+      <button onclick="active4();" id="onoff" class="point-button js-point-button4" ></button>
+      <span class="month-text">Curtent Usage</span>
+    
+    </div>
+
+    <div class="con-kap">
+    
+       <div>
+          <img src="../images/month.avif" class="foto_kap2">
+          <span class="month-text">Monthly</span>
+          <span class="number-des">157 </span><span class="text-des">kWh</span>
+       </div>
+       <div>
+          <img class="foto_kap2" src="../images/tariff.avif">
+          <span class="text-des">Total</span>
+          <span class="month-text">$<span class="number-des">95</span></span>
+        </div>
+    
+      
+    </div>
+    
+    <div>
+      <img src="../images/src/variant-0513.png" class="foto-graf">
+  </div>
+  </div>
+
+
+</div>
+      
+  <div class="container2">
+
+<div class="messeg"> 
+  <div class="con-kap">
+    <div><img class="foto_kap1" src="../images/message.avif">
+    <span class="ga2">messeg </span></div>
+    <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+    <div class="settings-menu" id="settingsMenu"></div>
+  </div>
+  <div class="messeg-container">
+<div class="messeg-box">
+  <div>
+  <p class="messeg-text">Too cultivated use solicitude</p>
+  <p class="messeg-date">March 5, 08.95pm</p>
+</div>
+<div><button class="row"> &#8594</button></div>
+</div>
+<div class="messeg-box">
+  <div>
+  <p class="messeg-text">hello my dear freands how yor day today</p>
+  <p class="messeg-date">March 4, 11.35pm</p>
+</div>
+  <div><button class="row"> &#8594</button></div>
+</div>
+<div class="messeg-box">
+  <div>
+  <p class="messeg-text">dfaasdfasdfsdafsdafsavf,la[v,a[dsl,f;lasd,lafdafdsgvfsafasd</p>
+  <p class="messeg-date">March 2, 08.30am</p>
+</div>
+<div><button class="row"> &#8594</button></div>
+</div>
+
+  </div>
+</div>
+
+<div class="tariff"> 
+  <div class="con-kap">
+    <div><img class="foto_kap1" src="../images/tariff.avif">
+    <span class="ga2">tariff</span></div>
+    <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+    <div class="settings-menu" id="settingsMenu"></div>
+  </div>
+   
+
+      
+         
+            <span class="text-des">Currnt Quarter (Dec-Mar)</span>
+        
+        <div class="con-kap">  
+          <div>
+        
+              <p class="text-des2">$6500</p>
+              <span class="text-des3-2">&#8599</span> <span class="text-des3">$250</span>
+              <div class="con-kap text-des">
+                  <span>Jan 1</span>
+                  <span>Mar 31</span>
+                  
+              </div>
+              <div class="container3"><div class="skills html"></div></div>
+              
+          </div>
+      
+          <div>
+            <div>
+              <div class="container4">
+                <div class="circle-outer"></div>
+                <div class="circle-inner-1"></div>
+                <div class="circle-inner-3"></div>
+                <div class="circle-inner-2"></div>
+                <p class="text-des5">75</p> 
+                <p class="text-des">days</p>
+              </div>  
+            </div>
+            <div>
+              <span class="text-des"> Until Endof March</span>
+            </div>
+          </div>
+        </div>
+   
+</div>
+
+<div class="account"> 
+  <div class="con-kap">
+    <div><img class="foto_kap1" src="../images/account.avif">
+    <span class="ga2">account </span></div>
+    <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+    <div class="settings-menu" id="settingsMenu"></div>
+  </div>
+  <div class="account-con">
+
+  <div>
+    Current Balance
+  </div>
+  <div>
+    <img src="../images/src/variant-0512.png" class="foto-colo">
+  </div>
+  </div>
+</div>
+
+<div class="setings"> 
+  <div class="con-kap"> 
+    <div><img class="foto_kap1" src="../images/setting.avif">
+    <span class="ga2">settings </span></div>
+    <button class="points1" onclick="toggleSettings()"> &#x22EE;&nbsp;</button>
+    <div class="settings-menu" id="settingsMenu"></div>
+  </div>
+  <div class="con-kap">
+    <div>
+<p  class="text-des">Screen brightness</p>
+<p class="text-des">Sound Volume</p>
+<p class="text-des">Currency</p>
+<p class="text-des">Weather</p>
+    </div>
+    <div>
+      
+      <p><input type="range" min="1" max="100" value="50"></p>
+      <p><input type="range" min="1" max="100" value="50"></p>
+      <div class="dropdown">
+      <p class="Euro"><button class="dropdown-btn">Euro</button>
+       <div class="dropdown-content">
+            <a href="#">dolars</a>
+            <a href="#">grn</a>
+            <a href="#">juice</a>
+        </div>
+       </div>
+       </p>
+       <p class="Euro">
+       <label class="switch">
+        <input type="checkbox" checked>
+        <span class="slider round"></span>
+      </label>
+    </p>
+    </div>
+  </div>
+</div>
+
+  </div>  
+    <div>
+      <input class="searchbar" type="text" placeholder="search..." >
+    </div>
+    
+    <script src="js/main.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+ </body>
+ </html>
